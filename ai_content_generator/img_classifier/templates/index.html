@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Classification</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+        }
+
+        .container {
+            flex: 1; /* This makes the container grow to fill the available space */
+        }
+
+        .section-title {
+            text-align: center;
+            margin: 30px 0;
+            font-size: 2rem;
+            color: #343a40;
+        }
+
+        .result-box {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-top: 20px;
+            background-color: #fff;
+        }
+
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        footer a {
+            color: #5a67d8;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Image Classification</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    <div class="container mt-5">
+        <h2 class="section-title">Upload Image for Classification</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form id="imageForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="imageUpload" class="form-label">Select an image to upload:</label>
+                        <input class="form-control" type="file" id="imageUpload" name="image" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Classify Image</button>
+                </form>
+                <div class="result-box mt-4" id="classificationResult">
+                    <h4>Classification Result:</h4>
+                    <p id="imageOutput">The classification result will appear here.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Image Classification Tool.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        document.getElementById("imageForm").addEventListener("submit", function (event) { 
+        event.preventDefault();
+    
+        const fileInput = document.getElementById("imageUpload");
+        const file = fileInput.files[0];
+        const csrfmiddlewaretoken = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+        const formData = new FormData();
+        formData.append('photo', file);
+        axios.post(
+            '/classify-image/',
+            formData,
+            { headers: { "X-CSRFToken": csrfmiddlewaretoken } }
+        )
+        .then(response => {
+            const data = response.data;
+            if (data.success) {
+                document.getElementById("imageOutput").innerHTML = `Predicted Result: <strong> ${data.prediction} </strong>`;
+                const imageOutputElement = document.createElement("img");
+                imageOutputElement.src = data.uploaded_file_url;
+                imageOutputElement.alt = "Uploaded Image";
+                imageOutputElement.style.maxWidth = "300px";
+                document.getElementById("classificationResult").appendChild(imageOutputElement);
+            } else {
+                document.getElementById("imageOutput").innerHTML = data.message || "An error occurred.";
+            }
+        })
+        .catch(error => {
+            console.error('There has been a problem with your Axios operation:', error);
+            document.getElementById("imageOutput").innerHTML = "Error occurred during classification.";
+        });
+    });
+</script>
+</html>
