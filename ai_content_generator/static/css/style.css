@@ -1,0 +1,77 @@
+/* Full-Page Chat Section */
+.fullpage {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #f0f0f0;
+}
+
+.chat-window {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    background-color: #e9ecef;
+}
+
+.chat-input {
+    display: flex;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+}
+
+.chat-input input[type="file"] {
+    flex: 1;
+    margin-right: 10px;
+    padding: 5px;
+}
+
+.chat-input input[type="text"] {
+    flex: 2;
+    margin-right: 10px;
+}
+
+.user-msg,
+.bot-msg,
+.image-msg {
+    padding: 10px;
+    border-radius: 15px;
+    margin-bottom: 10px;
+    width: fit-content;
+}
+
+.image-msg img {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-bottom: 5px;
+}
+
+.user-msg {
+    align-self: flex-end;
+    background-color: #28a745;
+    color: white;
+}
+
+.bot-msg {
+    align-self: flex-start;
+    background-color: #f1f1f1;
+}
+
+.image-msg {
+    align-self: flex-start;
+}
+
+/* Hide the actual file input */
+.hidden-file-input {
+    display: none;
+}
+
+/* Style the icon to make it look like a clickable button */
+.icon-upload-wrapper {
+    display: inline-block;
+    cursor: pointer;
+    font-size: 1.5em;
+    color: #28a745;
+    /* Change color as needed */
+    margin-right: 10px;
+}
